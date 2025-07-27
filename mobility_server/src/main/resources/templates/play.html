@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>조건 달성 시 알림 후 새창</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+          font-family: 'Arial', sans-serif;
+          background-color: #1e1e1e;
+          color: white;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+        }
+
+        h1 {
+          margin-bottom: 20px;
+          color: #ffcc00;
+          text-shadow: 1px 1px 2px #000;
+        }
+
+        #image-container {
+          border: 5px solid #ffcc00;
+          border-radius: 10px;
+          padding: 10px;
+          background-color: #333;
+          box-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+        }
+
+        #latest-image {
+          max-width: 600px;
+          width: 100%;
+          height: auto;
+          border-radius: 5px;
+        }
+
+        button {
+          margin-top: 30px;
+          padding: 12px 24px;
+          font-size: 16px;
+          background-color: #ffcc00;
+          border: none;
+          border-radius: 5px;
+          color: black;
+          cursor: pointer;
+          font-weight: bold;
+          transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+          background-color: #e6b800;
+        }
+    </style>
+</head>
+<body>
+<h1>촬영 이미지</h1>
+<div id="image-container">
+    <img id="latest-image" alt="최근 이미지" />
+</div>
+
+<button onclick="saveAsPDF()">PDF로 저장</button>
+
+<script>
+    function loadLatestImage() {
+      const imageElement = document.getElementById("latest-image");
+      imageElement.src = "/documentation/captured/latest.jpg?t=" + new Date().getTime();  // 캐시 무효화
+    }
+
+    loadLatestImage(); // 처음 실행
+
+    setInterval(loadLatestImage, 2000); // 2초마다 갱신
+
+    function saveAsPDF() {
+      const clone = document.body.cloneNode(true);
+      const img = clone.querySelector("#latest-image");
+      if (img) {
+        img.src = "/documentation/captured/latest.jpg";  // PDF용으로 timestamp 제거
+      }
+      clone.querySelectorAll("script").forEach(el => el.remove());
+
+      html2pdf().from(clone).save("연기감지_이미지.pdf");
+    }
+</script>
+</body>
+</html>

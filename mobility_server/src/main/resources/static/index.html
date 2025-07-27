@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>로그인 페이지</title>
+    <style>
+        body {
+          font-family: 'Malgun Gothic', Arial, sans-serif;
+          background: #f0f4f8;
+          display: flex;
+          height: 100vh;
+          justify-content: center;
+          align-items: center;
+          margin: 0;
+        }
+        .login-container {
+          background: white;
+          padding: 30px 40px;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          width: 320px;
+        }
+        h2 {
+          margin-bottom: 24px;
+          color: #2c3e50;
+          text-align: center;
+        }
+        label {
+          display: block;
+          margin-bottom: 6px;
+          font-weight: 600;
+          color: #34495e;
+        }
+        input[type="text"],
+        input[type="password"] {
+          width: 100%;
+          padding: 10px 12px;
+          margin-bottom: 24px;
+          border: 1.5px solid #bdc3c7;
+          border-radius: 6px;
+          font-size: 1em;
+          transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+          border-color: #2980b9;
+          outline: none;
+        }
+        button {
+          width: 100%;
+          padding: 12px;
+          background-color: #2980b9;
+          border: none;
+          color: white;
+          font-size: 1.1em;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        button:hover {
+          background-color: #1f618d;
+        }
+
+        /* 말풍선 스타일 */
+        .error-msg {
+          position: absolute;
+          background: #e74c3c;
+          color: white;
+          padding: 4px 10px;
+          border-radius: 4px;
+          font-size: 0.85em;
+          top: -28px;
+          left: 0;
+          white-space: nowrap;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+          z-index: 10;
+        }
+        .input-wrapper {
+          position: relative;
+          margin-bottom: 30px;
+        }
+        .input-wrapper.error .error-msg {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .input-wrapper.error input {
+          border-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>로그인</h2>
+    <form id="loginForm" onsubmit="return validateForm()">
+
+        <div class="input-wrapper" id="username-wrapper">
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" />
+            <div class="error-msg" id="username-error">아이디를 입력하세요.</div>
+        </div>
+
+        <div class="input-wrapper" id="password-wrapper">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" />
+            <div class="error-msg" id="password-error">비밀번호를 입력하세요.</div>
+        </div>
+
+        <button type="submit">로그인</button>
+    </form>
+</div>
+
+<script>
+    function goToReport() {
+           // 현재 페이지의 프로토콜, 호스트(IP 또는 localhost), 포트 사용
+           const host = window.location.protocol + "//" + window.location.host;
+            const username = encodeURIComponent(document.getElementById('username').value.trim());
+            window.location.href = `${host}/report?id=${username}`;
+       }
+
+   function validateForm() {
+     const usernameInput = document.getElementById('username');
+     const passwordInput = document.getElementById('password');
+     const usernameWrapper = document.getElementById('username-wrapper');
+     const passwordWrapper = document.getElementById('password-wrapper');
+
+     let valid = true;
+
+     // 초기화 - 에러 숨기기
+     usernameWrapper.classList.remove('error');
+     passwordWrapper.classList.remove('error');
+
+     if (!usernameInput.value.trim()) {
+       usernameWrapper.classList.add('error');
+       usernameInput.focus();
+       valid = false;
+     } else if (!passwordInput.value.trim()) {
+       passwordWrapper.classList.add('error');
+       passwordInput.focus();
+       valid = false;
+     }
+
+     if (!valid) return false;
+
+     // 실제 로그인 처리 위치
+     alert('로그인 성공 (테스트용)');
+     goToReport();
+     return false; // 테스트용 제출 막기
+   }
+
+   // 입력 중 에러 메시지 숨기기
+   document.getElementById('username').addEventListener('input', () => {
+     document.getElementById('username-wrapper').classList.remove('error');
+   });
+   document.getElementById('password').addEventListener('input', () => {
+     document.getElementById('password-wrapper').classList.remove('error');
+   });
+</script>
+
+</body>
+</html>
