@@ -140,6 +140,8 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
         const dateSpan = document.getElementById('todayDate');
@@ -258,14 +260,29 @@
     });
 
 
+     const socket = new SockJS('/ws-alert');
+  const stompClient = Stomp.over(socket);
+
+  stompClient.connect({}, function (frame) {
+    console.log('Connected: ' + frame);
+    stompClient.subscribe('/topic/alert', function (message) {
+      if (message.body === 'alert') {
+        showAlertAndOpenPlayPage();
+      }
+    });
+  });
+
+
     function showAlertAndOpenPlayPage() {
-            const result = confirm("비상상황발생! 촬영된 이미지를 보시겠습니까?");
-            if (result) {
-                // '확인' 클릭 시 새창으로 play.html 열기
-                window.open('/play', 'playWindow', 'width=800,height=600');
-            }
-            // '취소' 클릭 시 아무 동작하지 않음
-        }
+    const result = confirm("비상상황발생! 촬영된 이미지를 보시겠습니까?");
+    if (result) {
+        // 팝업 차단 우회 위해 짧은 딜레이 후에 열기
+        setTimeout(() => {
+            window.open('/play', 'playWindow', 'width=800,height=600');
+        }, 0);
+    }
+}
+
 </script>
 
 </body>

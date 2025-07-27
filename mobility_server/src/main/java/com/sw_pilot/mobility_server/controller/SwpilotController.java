@@ -3,8 +3,10 @@ package com.sw_pilot.mobility_server.controller;
 import com.sw_pilot.mobility_server.domain.Data;
 import com.sw_pilot.mobility_server.domain.ReportItem;
 import com.sw_pilot.mobility_server.service.OpenAiService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -107,7 +109,8 @@ public class SwpilotController {
             return OpenAiService.analyzeDataWithGpt(dataList, itemCounts);
         }
     }
-
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
     @PostMapping("/imagesend")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -167,11 +170,24 @@ public class SwpilotController {
             String newFileName = "latest" + extension;
             Path filePath = Paths.get(uploadDir, newFileName);
             ImageIO.write(originalImage, extension.replace(".", ""), filePath.toFile());
-
+            messagingTemplate.convertAndSend("/topic/alert", "alert");
             return ResponseEntity.ok("파일이 업로드되었습니다: /uploads/" + newFileName);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류 발생");
+        }
+    }
+
+    public class AlertController {
+
+        private final SimpMessagingTemplate messagingTemplate;
+
+        public AlertController(SimpMessagingTemplate messagingTemplate) {
+            this.messagingTemplate = messagingTemplate;
+        }
+
+        public void sendAlert() {
+            messagingTemplate.convertAndSend("/topic/alert", "alert");
         }
     }
 
