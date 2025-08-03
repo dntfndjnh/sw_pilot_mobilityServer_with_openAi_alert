@@ -20,6 +20,7 @@ open ai API 호출 후 사용자에게 PDF 리포트를 생성하는 시스템�
 ## 프로젝트 구조
 
 
+## 실행 이미지
 <img width="598" height="590" alt="Image" src="https://github.com/user-attachments/assets/bdb5d374-60c5-4462-971c-42525b69233f" />
 
 <img width="1205" height="876" alt="Image" src="https://github.com/user-attachments/assets/7c18abdf-568c-4a06-ae2d-f76b8e6d5556" />
